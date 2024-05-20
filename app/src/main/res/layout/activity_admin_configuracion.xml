@@ -1,0 +1,31 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".AdminConfiguracion">
+
+    <EditText
+        android:id="@+id/editTextAvisos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Avisos"
+        android:inputType="textMultiLine"
+        android:lines="3"
+        android:maxLines="5" />
+
+    <ListView
+        android:id="@+id/listViewHorarios"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="@null"
+        android:dividerHeight="0dp" />
+
+    <Button
+        android:id="@+id/buttonActualizar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Actualizar" />
+
+</LinearLayout>

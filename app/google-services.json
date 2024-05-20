@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "428588704921",
+    "project_id": "aplicacion-mapa-3acc5",
+    "storage_bucket": "aplicacion-mapa-3acc5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:428588704921:android:55b47ea695395de4308408",
+        "android_client_info": {
+          "package_name": "com.curso.aplicacionmapa"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "428588704921-3fnegkdmlgk6uhenud5v7ugru3ehi8g5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.curso.aplicacionmapa",
+            "certificate_hash": "5570e1e45a5db34da49f8e391c62594925623959"
+          }
+        },
+        {
+          "client_id": "428588704921-6arulm749sv36l0giguo4kdtsc7fdmrg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBqJ1Snm8141H-YFq5UB-ajT6n7C7DBK6I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "428588704921-6arulm749sv36l0giguo4kdtsc7fdmrg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
