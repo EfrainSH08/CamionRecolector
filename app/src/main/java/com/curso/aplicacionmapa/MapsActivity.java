@@ -176,46 +176,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Cargar la ubicación de la casa del usuario si está disponible en Firestore
         loadHomeLocationFromFirestore();
 
-        fetchTruckLocations();
-
     }
-
-
-    private void fetchTruckLocations() {
-        db.collection("truck_location").addSnapshotListener((snapshots, e) -> {
-            if (e != null) {
-                Toast.makeText(MapsActivity.this, "Error al obtener ubicaciones de camiones", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            if (snapshots != null) {
-                for (DocumentSnapshot snapshot : snapshots.getDocuments()) {
-                    snapshot.getReference().collection("camion").get().addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            for (DocumentSnapshot camionSnapshot : task.getResult().getDocuments()) {
-                                TruckLocation truckLocation = camionSnapshot.toObject(TruckLocation.class);
-                                if (truckLocation != null && truckLocation.getLocation() != null) {
-                                    GeoPoint geoPoint = truckLocation.getLocation();
-                                    LatLng latLng = new LatLng(geoPoint.getLatitude(), geoPoint.getLongitude());
-                                    if (markerIdentifierMap.containsKey(latLng)) {
-                                        Marker marker = markerIdentifierMap.get(latLng);
-                                        marker.setPosition(latLng);
-                                    } else {
-                                        MarkerOptions markerOptions = new MarkerOptions().position(latLng).title("Camión: " + camionSnapshot.getId());
-                                        Marker marker = mMap.addMarker(markerOptions);
-                                        markerIdentifierMap.put(latLng, marker); // Almacenar el marcador en el mapa
-                                    }
-                                }
-                            }
-                        } else {
-                            Toast.makeText(MapsActivity.this, "Error al obtener ubicaciones de camiones", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-            }
-        });
-    }
-
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -256,10 +217,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     });
         }
     }
-
-
-
-
 
     private void loadHomeLocationFromFirestore() {
         // Cargar la ubicación de la casa del usuario desde Firestore

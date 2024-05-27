@@ -1,21 +1,24 @@
 package com.curso.camion.models;
 
-import com.curso.camion.models.Camion;
 import com.google.firebase.firestore.GeoPoint;
 
 public class TruckLocation {
     private GeoPoint location;
     private long timestamp;
-    private Camion camion;
+    private String truckId;
+    private String truckName;
+    private String email;
 
     public TruckLocation() {
         // Constructor vacío requerido para Firestore
     }
 
-    public TruckLocation(GeoPoint location, long timestamp, Camion camion) {
+    public TruckLocation(GeoPoint location, long timestamp, String truckId, String truckName, String email) {
         this.location = location;
         this.timestamp = timestamp;
-        this.camion = camion;
+        this.truckId = truckId;
+        this.truckName = truckName;
+        this.email = email;
     }
 
     public GeoPoint getLocation() {
@@ -34,11 +37,27 @@ public class TruckLocation {
         this.timestamp = timestamp;
     }
 
-    public Camion getCamion() {
-        return camion;
+    public String getTruckId() {
+        return truckId;
     }
 
-    public void setCamion(Camion camion) {
-        this.camion = camion;
+    public void setTruckId(String truckId) {
+        this.truckId = truckId;
+    }
+
+    public String getTruckName() {
+        return truckName;
+    }
+
+    public void setTruckName(String truckName) {
+        this.truckName = truckName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

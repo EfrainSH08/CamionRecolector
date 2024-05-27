@@ -6,6 +6,7 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -111,38 +112,43 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (currentUser != null) {
             String camionId = currentUser.getUid();
             String camionEmail = currentUser.getEmail();
+            String camionName = currentUser.getDisplayName();
             String currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-            Camion camion = new Camion(camionId, currentUser.getDisplayName(), camionEmail, null);
-            TruckLocation truckLocation = new TruckLocation(new GeoPoint(location.getLatitude(), location.getLongitude()), System.currentTimeMillis(), camion);
+            TruckLocation truckLocation = new TruckLocation(
+                    new GeoPoint(location.getLatitude(), location.getLongitude()),
+                    System.currentTimeMillis(),
+                    camionId,
+                    camionName,
+                    camionEmail
+            );
 
-            // Verificar si ya existe un documento para la fecha actual
             db.collection("truck_routes")
                     .document(currentDate)
                     .get()
                     .addOnSuccessListener(documentSnapshot -> {
                         if (documentSnapshot.exists()) {
-                            // Si el documento existe, actualizar la ruta del camión
-                            addRoutePoint(currentDate, camionId, location);
+                            addRoutePoint(currentDate, camionId, camionName, location);
                         } else {
-                            // Si el documento no existe, crearlo con la ruta del camión
                             updateLocations(currentDate, truckLocation);
                         }
                     });
         }
     }
 
-    private void addRoutePoint(String currentDate, String camionId, Location location) {
+    private void addRoutePoint(String currentDate, String camionId, String camionName, Location location) {
         db.collection("truck_routes")
                 .document(currentDate)
                 .update("camiones." + camionId + ".route", FieldValue.arrayUnion(new GeoPoint(location.getLatitude(), location.getLongitude())),
                         "camiones." + camionId + ".geo_point", new GeoPoint(location.getLatitude(), location.getLongitude()),
-                        "camiones." + camionId + ".timestamp", System.currentTimeMillis());
+                        "camiones." + camionId + ".timestamp", System.currentTimeMillis(),
+                        "camiones." + camionId + ".truckName", camionName,
+                        "camiones." + camionId + ".truckId", camionId,
+                        "camiones." + camionId + ".email", FirebaseAuth.getInstance().getCurrentUser().getEmail());
     }
 
     private void updateLocations(String currentDate, TruckLocation truckLocation) {
         Map<String, Object> data = new HashMap<>();
 
-        // Obtener la información actual de los camiones
         DocumentReference docRef = db.collection("truck_routes").document(currentDate);
         docRef.get().addOnSuccessListener(documentSnapshot -> {
             Map<String, Object> camionesMap = (Map<String, Object>) documentSnapshot.get("camiones");
@@ -150,24 +156,48 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 camionesMap = new HashMap<>();
             }
 
-            // Crear un mapa con geo_point, timestamp, email, truckId, y route
             Map<String, Object> truckData = new HashMap<>();
             truckData.put("geo_point", truckLocation.getLocation());
             truckData.put("timestamp", truckLocation.getTimestamp());
-            truckData.put("email", truckLocation.getCamion().getEmail());
-            truckData.put("truckId", truckLocation.getCamion().getTruckId());
+            truckData.put("email", truckLocation.getEmail());
+            truckData.put("truckId", truckLocation.getTruckId());
+            truckData.put("truckName", truckLocation.getTruckName());
             truckData.put("route", Collections.singletonList(truckLocation.getLocation()));
 
-            // Agregar el nuevo camión al mapa de camiones
-            camionesMap.put(truckLocation.getCamion().getTruckId(), truckData);
+            camionesMap.put(truckLocation.getTruckId(), truckData);
 
-            // Actualizar el campo "camiones" en Firestore
             data.put("camiones", camionesMap);
             docRef.set(data, SetOptions.merge());
         });
     }
 
 
+    private void loadUserLocations() {
+        db.collection("homes")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            if (document.contains("latitude") && document.contains("longitude")) {
+                                double latitude = document.getDouble("latitude");
+                                double longitude = document.getDouble("longitude");
+                                String username = document.getString("username");
+                                String email = document.getString("email");
+
+                                Log.d("MapsActivity", "User Location: " + latitude + ", " + longitude + " - " + username + " - " + email);
+
+                                LatLng userLocation = new LatLng(latitude, longitude);
+                                mMap.addMarker(new MarkerOptions().position(userLocation).title(username).snippet(email));
+                            } else {
+                                Log.d("MapsActivity", "Document missing latitude or longitude: " + document.getId());
+                            }
+                        }
+                    } else {
+                        Log.e("MapsActivity", "Error getting documents: " + task.getException());
+                        Toast.makeText(MapsActivity.this, "Error getting documents: " + task.getException(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -178,7 +208,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         mMap.setMyLocationEnabled(true);
 
-
+        loadUserLocations();
     }
 
     @Override
@@ -190,4 +220,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
     }
+
+
 }
