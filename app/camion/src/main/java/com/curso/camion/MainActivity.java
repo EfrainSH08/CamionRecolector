@@ -138,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void goToDashboard() {
-        Intent intent = new Intent(com.curso.camion.MainActivity.this, AdminConfiguracion.class);
+        Intent intent = new Intent(com.curso.camion.MainActivity.this, MainActivity.class);
         startActivity(intent);
     }
 

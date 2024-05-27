@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.curso.camion.MainActivity;
+import com.curso.camion.models.Camion;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -55,40 +56,36 @@ public class RegisterActivity extends AppCompatActivity {
                 if (nameUser.isEmpty() || emailUser.isEmpty() || passUser.isEmpty()){
                     Toast.makeText(com.curso.camion.RegisterActivity.this, "Complete los datos", Toast.LENGTH_SHORT).show();
                 }else{
-                    registerUser(nameUser, emailUser, passUser);
+                    registerCamion(nameUser, emailUser, passUser);
                 }
             }
         });
     }
 
 
-    private void registerUser(String nameUser, String emailUser, String passUser) {
+    private void registerCamion(String nameUser, String emailUser, String passUser) {
         mAuth.createUserWithEmailAndPassword(emailUser, passUser).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     String id = mAuth.getCurrentUser().getUid();
-                    Map<String, Object> map = new HashMap<>();
-                    map.put("id", id);
-                    map.put("name", nameUser);
-                    map.put("email", emailUser);
-                    map.put("password", passUser);
+                    Camion user = new Camion (id, nameUser, emailUser, passUser);
 
-                    mFirestore.collection("user").document(id).set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    mFirestore.collection("Camion").document(id).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void unused) {
                             finish();
-                            startActivity(new Intent(com.curso.camion.RegisterActivity.this, MainActivity.class));
-                            Toast.makeText(com.curso.camion.RegisterActivity.this, "Usuario registrado con éxito", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(RegisterActivity.this, MainActivity.class));
+                            Toast.makeText(RegisterActivity.this, "Usuario registrado con éxito", Toast.LENGTH_SHORT).show();
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(com.curso.camion.RegisterActivity.this, "Error al guardar", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegisterActivity.this, "Error al guardar", Toast.LENGTH_SHORT).show();
                         }
                     });
                 } else {
-                    Toast.makeText(com.curso.camion.RegisterActivity.this, "Error al registrar: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterActivity.this, "Error al registrar: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         });

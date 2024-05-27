@@ -1,41 +1,44 @@
 package com.curso.camion.models;
 
+import com.curso.camion.models.Camion;
+import com.google.firebase.firestore.GeoPoint;
+
 public class TruckLocation {
-    private double latitude;
-    private double longitude;
-    private String truckId;
+    private GeoPoint location;
+    private long timestamp;
+    private Camion camion;
 
     public TruckLocation() {
-        // Constructor vacío requerido por Firestore
+        // Constructor vacío requerido para Firestore
     }
 
-    public TruckLocation(double latitude, double longitude, String truckId) {
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.truckId = truckId;
+    public TruckLocation(GeoPoint location, long timestamp, Camion camion) {
+        this.location = location;
+        this.timestamp = timestamp;
+        this.camion = camion;
     }
 
-    public double getLatitude() {
-        return latitude;
+    public GeoPoint getLocation() {
+        return location;
     }
 
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
+    public void setLocation(GeoPoint location) {
+        this.location = location;
     }
 
-    public double getLongitude() {
-        return longitude;
+    public long getTimestamp() {
+        return timestamp;
     }
 
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 
-    public String getTruckId() {
-        return truckId;
+    public Camion getCamion() {
+        return camion;
     }
 
-    public void setTruckId(String truckId) {
-        this.truckId = truckId;
+    public void setCamion(Camion camion) {
+        this.camion = camion;
     }
 }

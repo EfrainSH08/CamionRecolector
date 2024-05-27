@@ -1,41 +1,43 @@
 package com.curso.aplicacionmapa.models;
 
+import com.google.firebase.firestore.GeoPoint;
+
 public class UserLocation {
-    private double latitude;
-    private double longitude;
-    private String userId;
+    private GeoPoint geo_point;
+    private long timestamp;
+    private User user;
 
     public UserLocation() {
-        // Constructor vacío requerido por Firestore
+        // Constructor vacío necesario para Firestore
     }
 
-    public UserLocation(double latitude, double longitude, String userId) {
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.userId = userId;
+    public UserLocation(GeoPoint geo_point, long timestamp, User user) {
+        this.geo_point = geo_point;
+        this.timestamp = timestamp;
+        this.user = user;
     }
 
-    public double getLatitude() {
-        return latitude;
+    public GeoPoint getGeo_point() {
+        return geo_point;
     }
 
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
+    public void setGeo_point(GeoPoint geo_point) {
+        this.geo_point = geo_point;
     }
 
-    public double getLongitude() {
-        return longitude;
+    public long getTimestamp() {
+        return timestamp;
     }
 
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 
-    public String getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
     }
 }

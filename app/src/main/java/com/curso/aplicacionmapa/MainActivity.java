@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
                     .get()
                     .addOnSuccessListener(documentSnapshot -> {
                         if (documentSnapshot.exists()) {
-                            String username = documentSnapshot.getString("name");
+                            String username = documentSnapshot.getString("username");
                             textViewWelcomeMessage.setText("Bienvenido, " + username);
                         }
                     })
@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
                         // Manejo de errores
                     });
         }
+
 
         buttonLogout.setOnClickListener(v -> showLogoutDialog());
         btnDashboard.setOnClickListener(v -> goToDashboard());
